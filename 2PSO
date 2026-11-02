@@ -1,0 +1,57 @@
+
+import random
+
+# Objective function
+def fitness(x):
+    return x ** 2
+
+# PSO parameters
+n = 10
+iterations = 50
+w = 0.7
+c1 = 1.5
+c2 = 1.5
+
+# Initialize particles
+position = [random.uniform(-10, 10) for _ in range(n)]
+velocity = [random.uniform(-1, 1) for _ in range(n)]
+
+# Initialize personal best
+pbest = position.copy()
+pbest_value = [fitness(x) for x in position]
+
+# Initialize global best
+gbest_index = pbest_value.index(min(pbest_value))
+gbest = pbest[gbest_index]
+
+# PSO iterations
+for t in range(iterations):
+
+    for i in range(n):
+
+        r1 = random.random()
+        r2 = random.random()
+
+        # Update velocity
+        velocity[i] = (w * velocity[i]
+                       + c1 * r1 * (pbest[i] - position[i])
+                       + c2 * r2 * (gbest - position[i]))
+
+        # Update position
+        position[i] = position[i] + velocity[i]
+
+        # Calculate fitness
+        current = fitness(position[i])
+
+        # Update personal best
+        if current < pbest_value[i]:
+            pbest[i] = position[i]
+            pbest_value[i] = current
+
+        # Update global best
+        if current < fitness(gbest):
+            gbest = position[i]
+
+# Display result
+print("Best Position:", gbest)
+print("Minimum Fitness:", fitness(gbest))
